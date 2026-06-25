@@ -1,54 +1,55 @@
 <div align="center">
 
-# Ocur
+# Ocur OS
 
-### The AI Operating System for companies.
+### The operating system that runs your company — with two faces.
 
-A premium, high-end marketing site and product console for **Ocur** — an agentic
-operating system that runs a company. A coordinated workforce of AI agents handles
-revenue, finance, support, and operations, orchestrated by a single kernel,
-observable in real time, and always accountable to a human.
+Ocur is an AI operating system for companies. Instead of a conventional
+marketing site, the experience **is** the OS: drive it as a graphical
+**Desktop** or a living **Terminal**, and flip between them with one switch.
 
 </div>
 
 ---
 
-## ✦ Concept
+## ✦ The concept
 
-Ocur is framed as an **operating system for work**, not another chatbot:
+Ocur runs a company on a coordinated workforce of AI agents, orchestrated by a
+single kernel. The site embodies that idea by being an interface to the OS —
+and like any real OS, it offers a GUI and a CLI:
 
-- **The Kernel** — the orchestration core that decomposes goals into plans, routes
-  work to the right agents, resolves conflicts, and drives toward outcomes.
-- **The Agent Workforce** — specialized agents (Atlas/Revenue, Ledger/Finance,
-  Echo/Support, Forge/Operations, Cohort/People, Spark/Growth), each with its own
-  tools, memory, and granted authority.
-- **Shared Memory** — a living company knowledge graph every agent reads and writes.
-- **Governance** — policies, approvals, and spend limits enforced on every action,
-  with humans in the loop where it matters.
-- **Observability** — real-time traces of what ran, why, and what it cost.
+- **🖥️ Desktop** — a bright, spatial OS. A top menubar, an aurora wallpaper, a
+  dock, and **draggable, focusable windows**: Welcome, Agents, Activity, Kernel
+  Monitor, Pricing, and Get Access.
+- **⌨️ Terminal** — a living phosphor console with a boot sequence, CRT
+  scanlines, and a **real command interpreter**. Type (or click) `about`,
+  `agents`, `workflows`, `pricing`, `access`, `desktop`, `help`, `clear`…
 
-## ✦ What's inside
-
-| Route | Description |
-| --- | --- |
-| `/` | The marketing site — hero with a live orchestration visual, the platform bento, the agent workforce, an execution-trace walkthrough, a console preview, integrations, metrics, testimonials, pricing, and CTA. |
-| `/dashboard` | The **live product console** — sidebar, command bar, KPI tiles with sparklines, throughput chart, agent workforce monitor, an approvals queue, a live activity feed, and running workflows. |
+A switch in the top bar flips the entire OS between the two. Your choice is
+remembered, and **⌘`** (Ctrl+`) toggles modes from anywhere.
 
 ## ✦ Design language
 
-- **Obsidian + platinum** monochrome base with a single restrained **spectral**
-  accent (iris → mint), in the spirit of premium product design.
-- **Inter** for UI/body, **JetBrains Mono** for the OS / console aesthetic.
-- Ambient grids, layered glows, film-grain texture, glassmorphism, and tasteful
-  motion (scroll reveals, animated orchestration pulses) — all reduced-motion aware.
-- Fully responsive, from a 390px phone to wide desktop.
+Two deliberately opposite aesthetics, one brand:
+
+| | Desktop | Terminal |
+| --- | --- | --- |
+| Surface | Bright "aurora" wallpaper, frosted white windows | Deep black with CRT scanlines + vignette |
+| Ink | Warm near-black | Mint **phosphor** with text-glow (amber accents) |
+| Accent | Electric **cobalt** + violet/coral | Phosphor green |
+| Type | Space Grotesk | JetBrains Mono |
+
+Both are fully responsive — windows tile into a scrollable stack on phones; the
+terminal reflows — and the orbital Ocur mark adapts to either mode via
+`currentColor`.
 
 ## ✦ Tech stack
 
 - [Next.js 14](https://nextjs.org/) (App Router) + React 18 + TypeScript
-- [Tailwind CSS](https://tailwindcss.com/) with a custom design system
-- [Framer Motion](https://www.framer.com/motion/) for motion
+- [Tailwind CSS](https://tailwindcss.com/) with a custom dual-mode design system
 - [Lucide](https://lucide.dev/) icons
+- No heavy UI deps — windows, dragging, the dock, and the terminal interpreter
+  are all hand-built.
 
 ## ✦ Getting started
 
@@ -68,19 +69,22 @@ npm run start
 
 ```
 app/
-  layout.tsx            # fonts, metadata, root shell
-  page.tsx              # landing page composition
-  globals.css           # design tokens, base styles, utilities
-  dashboard/            # the product console (layout + overview)
+  layout.tsx              # fonts (Space Grotesk + JetBrains Mono), metadata
+  page.tsx                # renders <OcurOS />
+  globals.css             # design tokens, CRT effects, wallpaper, glass chrome
 components/
-  brand/                # logo & mark
-  sections/             # landing page sections
-  dashboard/            # sidebar, topbar, console widgets
-  visuals/              # the animated orchestration core
-  ui/                   # primitives (reveal, backdrop, headings)
-lib/
-  utils.ts              # cn() class merge helper
-tailwind.config.ts      # the Ocur design system
+  os/
+    os-shell.tsx          # mode state, the top switch, ⌘` shortcut, clock
+    data.ts               # shared content (agents, metrics, pricing, …)
+    desktop/
+      desktop.tsx          # window manager + dock (spatial ↔ stacked)
+      window.tsx           # draggable, focusable window chrome
+      apps.tsx             # window contents (Welcome, Agents, Kernel, …)
+    terminal/
+      terminal.tsx         # boot, input, history, block caret, chips
+      commands.tsx         # the command interpreter + ASCII banner
+  brand/logo.tsx          # orbital mark (adapts via currentColor)
+tailwind.config.ts        # dual-mode tokens + animations
 ```
 
 > All product copy, metrics, and customer names are illustrative.
