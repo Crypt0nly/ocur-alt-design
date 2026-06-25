@@ -1,6 +1,4 @@
 import {
-  ArrowUpRight,
-  ArrowDownRight,
   TrendingUp,
   Wallet,
   Headphones,
@@ -13,6 +11,7 @@ import {
   type LucideIcon,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { Panel, Delta, Sparkline } from "@/components/dashboard/ui";
 
 /* ---------------- data ---------------- */
 
@@ -58,86 +57,6 @@ const workflows = [
   { name: "Enterprise onboarding — ACME", agents: 4, progress: 34, state: "running" },
   { name: "Support backlog cleanup", agents: 1, progress: 82, state: "running" },
 ];
-
-/* ---------------- primitives ---------------- */
-
-function Delta({ value, good }: { value: number; good: boolean }) {
-  const up = value >= 0;
-  const Icon = up ? ArrowUpRight : ArrowDownRight;
-  return (
-    <span
-      className={cn(
-        "inline-flex items-center gap-0.5 rounded-md px-1.5 py-0.5 font-mono text-2xs",
-        good ? "bg-mint-500/10 text-mint-400" : "bg-red-500/10 text-red-400"
-      )}
-    >
-      <Icon className="h-3 w-3" />
-      {Math.abs(value)}
-      {Number.isInteger(value) && Math.abs(value) < 10 ? "" : "%"}
-    </span>
-  );
-}
-
-function Sparkline({ data }: { data: number[] }) {
-  const max = Math.max(...data);
-  const min = Math.min(...data);
-  const range = max - min || 1;
-  const pts = data
-    .map((d, i) => {
-      const x = (i / (data.length - 1)) * 100;
-      const y = 28 - ((d - min) / range) * 24 - 2;
-      return `${x.toFixed(1)},${y.toFixed(1)}`;
-    })
-    .join(" ");
-  return (
-    <svg viewBox="0 0 100 28" preserveAspectRatio="none" className="h-8 w-full">
-      <polyline
-        points={pts}
-        fill="none"
-        stroke="url(#spark)"
-        strokeWidth="2"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        vectorEffect="non-scaling-stroke"
-      />
-      <defs>
-        <linearGradient id="spark" x1="0" y1="0" x2="1" y2="0">
-          <stop offset="0" stopColor="#7167FA" />
-          <stop offset="1" stopColor="#5EE6C8" />
-        </linearGradient>
-      </defs>
-    </svg>
-  );
-}
-
-function Panel({
-  title,
-  action,
-  children,
-  className,
-}: {
-  title?: string;
-  action?: React.ReactNode;
-  children: React.ReactNode;
-  className?: string;
-}) {
-  return (
-    <section
-      className={cn(
-        "rounded-3xl border border-white/[0.07] bg-ink-900/40 backdrop-blur-sm",
-        className
-      )}
-    >
-      {title && (
-        <div className="flex items-center justify-between border-b border-white/[0.06] px-6 py-4">
-          <h2 className="text-sm font-medium text-chalk">{title}</h2>
-          {action}
-        </div>
-      )}
-      {children}
-    </section>
-  );
-}
 
 /* ---------------- page ---------------- */
 

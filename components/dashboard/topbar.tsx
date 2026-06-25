@@ -1,8 +1,25 @@
+"use client";
+
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { Search, Bell, Plus, PanelLeft } from "lucide-react";
 import { Logo } from "@/components/brand/logo";
 
+const titles: Record<string, string> = {
+  "/dashboard": "Overview",
+  "/dashboard/agents": "Agents",
+  "/dashboard/workflows": "Workflows",
+  "/dashboard/memory": "Memory",
+  "/dashboard/integrations": "Integrations",
+  "/dashboard/activity": "Activity",
+  "/dashboard/governance": "Governance",
+  "/dashboard/settings": "Settings",
+};
+
 export function Topbar() {
+  const pathname = usePathname();
+  const title = titles[pathname] ?? "Console";
+
   return (
     <header className="sticky top-0 z-20 border-b border-white/[0.07] bg-ink-950/70 backdrop-blur-xl">
       <div className="flex h-16 items-center gap-4 px-5 sm:px-8">
@@ -18,7 +35,7 @@ export function Topbar() {
         </div>
 
         <div className="hidden lg:block">
-          <h1 className="text-sm font-medium text-chalk">Overview</h1>
+          <h1 className="text-sm font-medium text-chalk">{title}</h1>
           <p className="font-mono text-2xs text-chalk-faint">
             Northwind · production
           </p>

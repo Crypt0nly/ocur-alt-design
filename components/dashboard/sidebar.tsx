@@ -1,4 +1,7 @@
+"use client";
+
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import {
   LayoutDashboard,
   Boxes,
@@ -18,32 +21,31 @@ type NavItem = {
   label: string;
   icon: LucideIcon;
   href: string;
-  active?: boolean;
   badge?: string;
 };
 
 const main: NavItem[] = [
-  { label: "Overview", icon: LayoutDashboard, href: "/dashboard", active: true },
-  { label: "Agents", icon: Boxes, href: "/dashboard", badge: "6" },
-  { label: "Workflows", icon: Workflow, href: "/dashboard", badge: "37" },
-  { label: "Memory", icon: Network, href: "/dashboard" },
-  { label: "Integrations", icon: Plug, href: "/dashboard" },
-  { label: "Activity", icon: Activity, href: "/dashboard" },
+  { label: "Overview", icon: LayoutDashboard, href: "/dashboard" },
+  { label: "Agents", icon: Boxes, href: "/dashboard/agents", badge: "9" },
+  { label: "Workflows", icon: Workflow, href: "/dashboard/workflows", badge: "37" },
+  { label: "Memory", icon: Network, href: "/dashboard/memory" },
+  { label: "Integrations", icon: Plug, href: "/dashboard/integrations" },
+  { label: "Activity", icon: Activity, href: "/dashboard/activity" },
 ];
 
 const system: NavItem[] = [
-  { label: "Governance", icon: ShieldCheck, href: "/dashboard" },
-  { label: "Settings", icon: Settings, href: "/dashboard" },
+  { label: "Governance", icon: ShieldCheck, href: "/dashboard/governance", badge: "3" },
+  { label: "Settings", icon: Settings, href: "/dashboard/settings" },
 ];
 
-function NavLink({ item }: { item: NavItem }) {
+function NavLink({ item, active }: { item: NavItem; active: boolean }) {
   const Icon = item.icon;
   return (
     <Link
       href={item.href}
       className={cn(
         "group flex items-center gap-3 rounded-xl px-3 py-2 text-sm transition-colors",
-        item.active
+        active
           ? "bg-white/[0.06] text-chalk"
           : "text-chalk-muted hover:bg-white/[0.03] hover:text-chalk-soft"
       )}
@@ -51,13 +53,18 @@ function NavLink({ item }: { item: NavItem }) {
       <Icon
         className={cn(
           "h-[18px] w-[18px]",
-          item.active ? "text-iris-200" : "text-chalk-faint group-hover:text-chalk-soft"
+          active ? "text-iris-200" : "text-chalk-faint group-hover:text-chalk-soft"
         )}
         strokeWidth={1.75}
       />
       <span className="flex-1">{item.label}</span>
       {item.badge && (
-        <span className="rounded-md bg-white/[0.05] px-1.5 py-0.5 font-mono text-2xs text-chalk-muted">
+        <span
+          className={cn(
+            "rounded-md px-1.5 py-0.5 font-mono text-2xs",
+            active ? "bg-iris-500/15 text-iris-200" : "bg-white/[0.05] text-chalk-muted"
+          )}
+        >
           {item.badge}
         </span>
       )}
@@ -66,6 +73,10 @@ function NavLink({ item }: { item: NavItem }) {
 }
 
 export function Sidebar() {
+  const pathname = usePathname();
+  const isActive = (href: string) =>
+    href === "/dashboard" ? pathname === href : pathname.startsWith(href);
+
   return (
     <aside className="fixed inset-y-0 left-0 z-30 hidden w-[260px] flex-col border-r border-white/[0.07] bg-ink-950/80 backdrop-blur-xl lg:flex">
       <div className="flex h-16 items-center px-5">
@@ -94,7 +105,7 @@ export function Sidebar() {
             Operate
           </p>
           {main.map((i) => (
-            <NavLink key={i.label} item={i} />
+            <NavLink key={i.label} item={i} active={isActive(i.href)} />
           ))}
         </div>
         <div className="space-y-1">
@@ -102,7 +113,7 @@ export function Sidebar() {
             System
           </p>
           {system.map((i) => (
-            <NavLink key={i.label} item={i} />
+            <NavLink key={i.label} item={i} active={isActive(i.href)} />
           ))}
         </div>
       </nav>
