@@ -2,10 +2,11 @@
 
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import { BOOT, BANNER, COMMANDS } from "./commands";
+import { agentReply } from "@/components/os/agent-replies";
 
 type Line = { id: number; kind: "in" | "out"; text?: string; node?: ReactNode };
 
-const CHIPS = ["help", "about", "agents", "workflows", "pricing", "access", "desktop"];
+const CHIPS = ["help", "about", "ask", "agents", "workflows", "pricing", "access", "desktop"];
 
 export function Terminal({ onExit }: { onExit?: () => void }) {
   const [lines, setLines] = useState<Line[]>([]);
@@ -47,30 +48,56 @@ export function Terminal({ onExit }: { onExit?: () => void }) {
 
   const run = (raw: string) => {
     push("in", raw);
-    const cmd = raw.trim().toLowerCase();
-    if (cmd) setHistory((h) => [...h, raw]);
+    const trimmed = raw.trim();
+    if (trimmed) setHistory((h) => [...h, raw]);
     setHistIdx(-1);
-    if (!cmd) return;
-    if (cmd === "clear") {
+    if (!trimmed) return;
+
+    const sp = trimmed.indexOf(" ");
+    const head = (sp === -1 ? trimmed : trimmed.slice(0, sp)).toLowerCase();
+    const rest = sp === -1 ? "" : trimmed.slice(sp + 1).trim();
+
+    if (head === "clear") {
       setLines([]);
       return;
     }
-    if (cmd === "banner") {
+    if (head === "banner") {
       push("out", BANNER);
       return;
     }
-    if (["desktop", "gui", "exit", "quit"].includes(cmd)) {
+    if (["desktop", "gui", "exit", "quit"].includes(head)) {
       push("out", <span className="phosphor-dim">switching to desktop…</span>);
       setTimeout(() => onExit?.(), 380);
       return;
     }
-    const fn = COMMANDS[cmd];
+    if (["ask", "talk", "chat", "ocur"].includes(head)) {
+      if (!rest) {
+        push(
+          "out",
+          <span className="phosphor-dim">
+            usage: ask &lt;message&gt; — e.g.{" "}
+            <span className="phosphor">ask close the books for May</span>
+          </span>
+        );
+        return;
+      }
+      push(
+        "out",
+        <div className="whitespace-pre-wrap">
+          <span className="phosphor-gold">ocur »</span>{" "}
+          <span className="phosphor-soft">{agentReply("ocur", rest)}</span>
+        </div>
+      );
+      return;
+    }
+
+    const fn = COMMANDS[head];
     if (fn) push("out", fn());
     else
       push(
         "out",
         <span className="text-red-400">
-          command not found: {cmd} — type <span className="phosphor">help</span>
+          command not found: {head} — type <span className="phosphor">help</span>
         </span>
       );
   };
@@ -155,6 +182,11 @@ export function Terminal({ onExit }: { onExit?: () => void }) {
               key={c}
               onClick={(e) => {
                 e.stopPropagation();
+                if (c === "ask") {
+                  setInput("ask ");
+                  focusInput();
+                  return;
+                }
                 run(c);
                 focusInput();
               }}

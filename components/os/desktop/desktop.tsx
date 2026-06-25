@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import {
   Sparkles,
+  MessageSquare,
   Boxes,
   Activity,
   Cpu,
@@ -22,9 +23,11 @@ import {
   AccessApp,
   type AppId,
 } from "./apps";
+import { ChatApp } from "./chat";
 
 const META: Record<AppId, { title: string; icon: LucideIcon; width: number }> = {
   welcome: { title: "Welcome to Ocur", icon: Sparkles, width: 468 },
+  chat: { title: "Talk to Ocur", icon: MessageSquare, width: 392 },
   agents: { title: "Agents.app", icon: Boxes, width: 340 },
   activity: { title: "Activity", icon: Activity, width: 320 },
   kernel: { title: "Kernel Monitor", icon: Cpu, width: 384 },
@@ -32,16 +35,17 @@ const META: Record<AppId, { title: string; icon: LucideIcon; width: number }> = 
   access: { title: "Get Access", icon: Mail, width: 392 },
 };
 
-const DOCK: AppId[] = ["welcome", "agents", "activity", "kernel", "pricing", "access"];
-const STACK_ORDER: AppId[] = ["welcome", "agents", "kernel", "activity", "pricing", "access"];
+const DOCK: AppId[] = ["welcome", "chat", "agents", "activity", "kernel", "pricing", "access"];
+const STACK_ORDER: AppId[] = ["welcome", "chat", "agents", "kernel", "activity", "pricing", "access"];
 
 type WinState = { open: boolean; x: number; y: number; z: number };
 
 const INITIAL: Record<AppId, WinState> = {
-  welcome: { open: true, x: 60, y: 44, z: 4 },
-  agents: { open: true, x: 612, y: 56, z: 3 },
-  kernel: { open: true, x: 980, y: 84, z: 2 },
-  activity: { open: true, x: 596, y: 432, z: 1 },
+  welcome: { open: true, x: 52, y: 46, z: 2 },
+  chat: { open: true, x: 548, y: 54, z: 5 },
+  agents: { open: true, x: 968, y: 78, z: 3 },
+  kernel: { open: false, x: 320, y: 150, z: 0 },
+  activity: { open: false, x: 600, y: 430, z: 0 },
   pricing: { open: false, x: 360, y: 150, z: 0 },
   access: { open: false, x: 470, y: 120, z: 0 },
 };
@@ -83,7 +87,9 @@ export function Desktop({ onTerminal }: { onTerminal?: () => void }) {
   const content = (id: AppId) => {
     switch (id) {
       case "welcome":
-        return <WelcomeApp onTerminal={onTerminal} onAccess={() => open("access")} />;
+        return <WelcomeApp onChat={() => open("chat")} onAccess={() => open("access")} />;
+      case "chat":
+        return <ChatApp />;
       case "agents":
         return <AgentsApp />;
       case "activity":

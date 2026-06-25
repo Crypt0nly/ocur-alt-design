@@ -43,6 +43,7 @@ export const BOOT: ReactNode[] = [
 ];
 
 const HELP: { cmd: string; desc: string }[] = [
+  { cmd: "ask <…>", desc: "talk to Ocur and the agents" },
   { cmd: "about", desc: "what Ocur is" },
   { cmd: "agents", desc: "the autonomous workforce" },
   { cmd: "workflows", desc: "multi-agent processes running now" },

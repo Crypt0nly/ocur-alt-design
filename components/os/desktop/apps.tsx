@@ -1,12 +1,12 @@
-import { ArrowRight, SquareTerminal, Check, Cpu } from "lucide-react";
+import { ArrowRight, MessageSquare, Check, Cpu } from "lucide-react";
 import { agents, metrics, activity, pricing } from "@/components/os/data";
 import { cn } from "@/lib/utils";
 
 export function WelcomeApp({
-  onTerminal,
+  onChat,
   onAccess,
 }: {
-  onTerminal?: () => void;
+  onChat?: () => void;
   onAccess?: () => void;
 }) {
   return (
@@ -48,11 +48,11 @@ export function WelcomeApp({
           <ArrowRight className="h-4 w-4" />
         </button>
         <button
-          onClick={onTerminal}
+          onClick={onChat}
           className="inline-flex items-center gap-1.5 rounded-full border border-ink/15 px-4 py-2.5 text-sm font-medium text-ink-soft transition-colors hover:bg-ink/[0.04]"
         >
-          <SquareTerminal className="h-4 w-4" />
-          Open Terminal
+          <MessageSquare className="h-4 w-4" />
+          Talk to an agent
         </button>
       </div>
       <p className="mt-4 font-mono text-2xs text-ink-faint">
@@ -209,4 +209,11 @@ export function AccessApp() {
   );
 }
 
-export type AppId = "welcome" | "agents" | "activity" | "kernel" | "pricing" | "access";
+export type AppId =
+  | "welcome"
+  | "chat"
+  | "agents"
+  | "activity"
+  | "kernel"
+  | "pricing"
+  | "access";
